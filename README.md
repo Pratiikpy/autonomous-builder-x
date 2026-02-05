@@ -240,9 +240,45 @@ autonomous-builder-x/
 │   ├── live/page.tsx           # Live streaming UI
 │   └── api/live-build/
 │       └── route.ts            # SSE streaming endpoint
+├── integrations/
+│   ├── mcp-server/             # MCP server for Claude Desktop
+│   ├── openclaw-skill/         # OpenClaw skill integration
+│   └── sdk-examples/           # 3 production-ready examples
 ├── package.json
 └── README.md
 ```
+
+## 🔌 Integrations
+
+LiveForge provides **4 integration methods** for maximum agent composability:
+
+### 1. MCP Server (`integrations/mcp-server/`)
+Expose LiveForge to Claude Desktop and other MCP-compatible agents.
+```bash
+cd integrations/mcp-server && npm install && node index.js
+```
+
+### 2. OpenClaw Skill (`integrations/openclaw-skill/`)
+Enable OpenClaw agents to build Solana programs.
+```bash
+curl https://raw.githubusercontent.com/Pratiikpy/autonomous-builder-x/main/integrations/openclaw-skill/SKILL.md
+```
+
+### 3. SDK Examples (`integrations/sdk-examples/`)
+Three production-ready examples:
+- **Basic Build** - Simple build and deploy
+- **On-Chain Verification** - Verify SHA256 hashes
+- **Agent-to-Agent** - Meta-agent building sub-agents
+
+### 4. REST API (Live)
+Direct API access for custom integrations:
+```bash
+curl -X POST https://autonomous-builder-x.vercel.app/api/live-build \
+  -H "Content-Type: application/json" \
+  -d '{"prompt":"Build an NFT marketplace","network":"devnet"}'
+```
+
+**See [INTEGRATIONS.md](./INTEGRATIONS.md) for complete documentation.**
 
 ## 🔐 Security
 
