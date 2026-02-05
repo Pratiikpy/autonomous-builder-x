@@ -1,7 +1,6 @@
 use anchor_lang::prelude::*;
-use sha2::{Sha256, Digest};
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("GUyhK2AvkPcVwt4Q1ABmMsQTGvZphiAMaAnDWLSyZoSK");
 
 #[program]
 pub mod liveforge_logger {
