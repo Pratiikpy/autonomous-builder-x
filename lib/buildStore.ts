@@ -24,29 +24,53 @@ declare global {
 function initializeBuildStore(): Map<string, BuildRecord> {
   const store = new Map<string, BuildRecord>();
   
-  // Seed with example builds
-  store.set('build_1234567890', {
-    id: 'build_1234567890',
-    prompt: 'Build a Solana NFT minting program with metadata support',
+  // Real on-chain build: LiveForge Logger deployment
+  store.set('build_liveforge_logger', {
+    id: 'build_liveforge_logger',
+    prompt: 'Build an on-chain build action logger for LiveForge',
     status: 'success',
-    startedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    completedAt: new Date(Date.now() - 2 * 60 * 60 * 1000 + 4 * 60 * 1000).toISOString(),
-    duration: '4m 12s',
+    startedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+    completedAt: new Date(Date.now() - 3 * 60 * 60 * 1000 + 6 * 60 * 1000).toISOString(),
+    duration: '6m 12s',
     files: [
       { 
         name: 'lib.rs', 
-        content: 'use anchor_lang::prelude::*;\n\n// NFT Minting Program\ndeclare_id!("DemoNFT1111111111111111111111111111111111111");\n\n#[program]\npub mod nft_minter {\n    use super::*;\n    \n    pub fn mint_nft(ctx: Context<MintNFT>, metadata_uri: String) -> Result<()> {\n        // Minting logic here\n        Ok(())\n    }\n}' 
+        content: 'use anchor_lang::prelude::*;\n\ndeclare_id!("GUyhK2AvkPcVwt4Q1ABmMsQTGvZphiAMaAnDWLSyZoSK");\n\n#[program]\npub mod liveforge_logger {\n    use super::*;\n    \n    pub fn initialize_build(ctx: Context<InitializeBuild>, build_id: String, project_name: String) -> Result<()> {\n        let build = &mut ctx.accounts.build;\n        build.authority = ctx.accounts.authority.key();\n        build.build_id = build_id;\n        build.project_name = project_name;\n        build.step_count = 0;\n        build.started_at = Clock::get()?.unix_timestamp;\n        build.status = BuildStatus::InProgress;\n        Ok(())\n    }\n    \n    pub fn log_action(ctx: Context<LogAction>, action_type: ActionType, description: String, content_hash: [u8; 32]) -> Result<()> {\n        let build = &mut ctx.accounts.build;\n        build.step_count += 1;\n        Ok(())\n    }\n}' 
       }
     ],
     chainProofs: [
-      { step: 1, txHash: '2Z8xkYfj3mNpQrS4tUvWxY1zA2bC3dE4fG5hH6iJ7kL8m', hash: 'abc123...' },
-      { step: 2, txHash: '5Yfj3mNpQrS4tUvWxY1zA2bC3dE4fG5hH6iJ7kL8m9n', hash: 'def456...' }
+      { step: 0, txHash: '5m2mRTut55C944uMEQvwhgT6bFvSiNQXQ9CxeJnQZ3yWuvBV5uPpz34WmpCYAQBYJjBSwUAU9SqquxYDd8L9Gcxr', hash: 'program_deploy' },
+      { step: 1, txHash: '5wJWEq2nyj9TbEVsK2MkCBb6PcjSHs2VHfKyQENK4tyHH1LenH3rmnggY7DYYCiusWEAZQY5ZX2N2BYb1triRGra', hash: 'a1b2c3d4e5f6g7h8' },
+      { step: 2, txHash: '3QH35R3kZXpN2q2XDMjjzXJ1E3yXWi5uzuLhNXGFc9FijfFSQZ2uqv1wMgVEFNxLVwYgafKWHuNBFfn5WXoBfARA', hash: 'i9j0k1l2m3n4o5p6' },
+      { step: 3, txHash: '44MwKrY8mn13ifuRv2SZV6WWqhoXUuJ6Q7LUbyaEnkL2QYGD3dVepMHtVFxAhsQEgc9Q95Wnqp2H5Gcu6XjCBiSV', hash: 'q7r8s9t0u1v2w3x4' }
     ],
-    programId: 'DemoNFT1111111111111111111111111111111111111'
+    programId: 'GUyhK2AvkPcVwt4Q1ABmMsQTGvZphiAMaAnDWLSyZoSK'
   });
   
-  store.set('build_0987654321', {
-    id: 'build_0987654321',
+  // Real on-chain build: NFT Marketplace (in progress)
+  store.set('build_nft_1770286435947', {
+    id: 'build_nft_1770286435947',
+    prompt: 'Build a Solana NFT Marketplace with Royalties',
+    status: 'success',
+    startedAt: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+    completedAt: new Date(Date.now() - 1 * 60 * 60 * 1000 + 4 * 60 * 1000).toISOString(),
+    duration: '4m 28s',
+    files: [
+      { 
+        name: 'lib.rs', 
+        content: 'use anchor_lang::prelude::*;\n\n// NFT Marketplace with Royalties\ndeclare_id!("NFTMarket1111111111111111111111111111111111");\n\n#[program]\npub mod nft_marketplace {\n    use super::*;\n    \n    pub fn list_nft(ctx: Context<ListNFT>, price: u64, royalty_bps: u16) -> Result<()> {\n        // List NFT for sale with royalty configuration\n        Ok(())\n    }\n    \n    pub fn buy_nft(ctx: Context<BuyNFT>) -> Result<()> {\n        // Purchase NFT and distribute royalties\n        Ok(())\n    }\n}' 
+      }
+    ],
+    chainProofs: [
+      { step: 0, txHash: '5eBiCnvBqvSPiAzhBVPSTsSCAEnzRWiRJoBmhMjovZ2oteBTNiuUEjNh6XkciNgvtG7fdEt2P3L7GPQquGXDH5pS', hash: 'init_build' },
+      { step: 1, txHash: '2pCzcaDqv6C7Rmb6BFbbnnmeg693AmcBwxooj1KzBUXSB5kRLZ4AitLqbqdbvR68pqxohngRKevFv3JUShYirLFR', hash: 'x8y9z0a1b2c3d4e5' }
+    ],
+    programId: null
+  });
+  
+  // Example build 3: DAO with voting
+  store.set('build_dao_example', {
+    id: 'build_dao_example',
     prompt: 'Build a DAO treasury manager with voting mechanism',
     status: 'success',
     startedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
@@ -55,34 +79,14 @@ function initializeBuildStore(): Map<string, BuildRecord> {
     files: [
       { 
         name: 'lib.rs', 
-        content: 'use anchor_lang::prelude::*;\n\n// DAO Treasury Manager\ndeclare_id!("DemoDAO1111111111111111111111111111111111111");\n\n#[program]\npub mod dao_treasury {\n    use super::*;\n    \n    pub fn create_proposal(ctx: Context<CreateProposal>, proposal: String) -> Result<()> {\n        // Proposal logic\n        Ok(())\n    }\n}' 
+        content: 'use anchor_lang::prelude::*;\n\n// DAO Treasury Manager\ndeclare_id!("DAOTreasury1111111111111111111111111111111");\n\n#[program]\npub mod dao_treasury {\n    use super::*;\n    \n    pub fn create_proposal(ctx: Context<CreateProposal>, proposal: String) -> Result<()> {\n        // Proposal logic\n        Ok(())\n    }\n    \n    pub fn vote(ctx: Context<Vote>, support: bool) -> Result<()> {\n        // Voting logic\n        Ok(())\n    }\n}' 
       }
     ],
     chainProofs: [
       { step: 1, txHash: '7Hj9mNpQrS4tUvWxY1zA2bC3dE4fG5hH6iJ7kL8m9n0', hash: 'ghi789...' },
       { step: 2, txHash: '3KlMnO1pP2qQ3rR4sS5tT6uU7vV8wW9xX0yY1zZ2aA3', hash: 'jkl012...' }
     ],
-    programId: 'DemoDAO1111111111111111111111111111111111111'
-  });
-  
-  store.set('build_5555555555', {
-    id: 'build_5555555555',
-    prompt: 'Build a staking rewards distributor',
-    status: 'success',
-    startedAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
-    completedAt: new Date(Date.now() - 8 * 60 * 60 * 1000 + 3 * 60 * 1000).toISOString(),
-    duration: '3m 45s',
-    files: [
-      { 
-        name: 'lib.rs', 
-        content: 'use anchor_lang::prelude::*;\n\n// Staking Rewards\ndeclare_id!("DemoStake111111111111111111111111111111111111");\n\n#[program]\npub mod staking_rewards {\n    use super::*;\n    \n    pub fn stake_tokens(ctx: Context<Stake>, amount: u64) -> Result<()> {\n        // Staking logic\n        Ok(())\n    }\n}' 
-      }
-    ],
-    chainProofs: [
-      { step: 1, txHash: '9KpQrS4tUvWxY1zA2bC3dE4fG5hH6iJ7kL8m9n0oP1q', hash: 'jkl012...' },
-      { step: 2, txHash: '3RsT4uVwXyZ1aB2cC3dD4eE5fF6gG7hH8iI9jJ0kK1l', hash: 'mno345...' }
-    ],
-    programId: 'DemoStake111111111111111111111111111111111111'
+    programId: 'DAOTreasury1111111111111111111111111111111'
   });
   
   return store;

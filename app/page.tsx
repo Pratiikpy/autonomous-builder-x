@@ -1,8 +1,25 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+
+interface Stats {
+  totalBuilds: number;
+  successRate: string;
+  avgBuildTime: string;
+  totalProofs: number;
+}
 
 export default function Home() {
+  const [stats, setStats] = useState<Stats | null>(null);
+
+  useEffect(() => {
+    fetch('/api/stats')
+      .then(res => res.json())
+      .then(data => setStats(data))
+      .catch(err => console.error('Failed to fetch stats:', err));
+  }, []);
+
   return (
     <div className="min-h-screen bg-black text-green-400 font-mono">
       {/* Header with Navigation */}
@@ -29,6 +46,18 @@ export default function Home() {
               className="text-green-600 hover:text-green-400 transition-colors"
             >
               Build History
+            </Link>
+            <Link 
+              href="/autonomous"
+              className="text-green-600 hover:text-green-400 transition-colors"
+            >
+              Autonomous
+            </Link>
+            <Link 
+              href="/wallet"
+              className="text-green-600 hover:text-green-400 transition-colors"
+            >
+              Agent Wallet
             </Link>
           </nav>
         </div>
@@ -182,15 +211,21 @@ export default function Home() {
         {/* Stats Preview */}
         <div className="grid grid-cols-3 gap-4 mt-16">
           <div className="text-center">
-            <div className="text-4xl font-bold text-green-400 mb-2">8+</div>
+            <div className="text-4xl font-bold text-green-400 mb-2">
+              {stats ? `${stats.totalBuilds}+` : '...'}
+            </div>
             <div className="text-green-600 text-sm">Programs Built</div>
           </div>
           <div className="text-center">
-            <div className="text-4xl font-bold text-green-400 mb-2">87.5%</div>
+            <div className="text-4xl font-bold text-green-400 mb-2">
+              {stats ? `${stats.successRate}%` : '...'}
+            </div>
             <div className="text-green-600 text-sm">Success Rate</div>
           </div>
           <div className="text-center">
-            <div className="text-4xl font-bold text-green-400 mb-2">~5m</div>
+            <div className="text-4xl font-bold text-green-400 mb-2">
+              {stats ? `~${stats.avgBuildTime.split(' ')[0]}` : '...'}
+            </div>
             <div className="text-green-600 text-sm">Avg Build Time</div>
           </div>
         </div>

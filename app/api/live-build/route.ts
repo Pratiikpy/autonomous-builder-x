@@ -215,61 +215,77 @@ Be specific and production-ready. The code should compile without modification.`
         let generatedTests = '';
         let aiThinking = '';
 
-        try {
-          const message = await anthropic.messages.create({
-            model: 'claude-3-5-sonnet-20241022',
-            max_tokens: 4096,
-            messages: [
-              {
-                role: 'user',
-                content: `${systemPrompt}\n\nUser request: ${prompt}`
-              }
-            ],
-            stream: false
+        // Check if API key is available
+        if (!process.env.ANTHROPIC_API_KEY) {
+          sendEvent({ 
+            type: 'thinking', 
+            message: `⚠️ ANTHROPIC_API_KEY not configured. Running in DEMO MODE with template generation. For full AI code generation, set ANTHROPIC_API_KEY environment variable.` 
           });
-
-          const content = message.content[0];
-          if (content.type === 'text') {
-            const fullResponse = content.text;
-
-            // Parse the response to extract thinking, Rust, TypeScript, and tests
-            const thinkingMatch = fullResponse.match(/^(.*?)(?=```|$)/s);
-            if (thinkingMatch) {
-              aiThinking = thinkingMatch[1].trim();
-              sendEvent({ type: 'thinking', message: aiThinking });
-            }
-
-            // Extract Rust code
-            const rustMatch = fullResponse.match(/```rust\n([\s\S]*?)```/);
-            if (rustMatch) {
-              generatedRust = rustMatch[1];
-            } else {
-              // Fallback: generate a basic template
-              generatedRust = generateFallbackRust(prompt);
-            }
-
-            // Extract TypeScript SDK
-            const tsMatch = fullResponse.match(/```typescript\n([\s\S]*?)```/);
-            if (tsMatch) {
-              generatedSDK = tsMatch[1];
-            } else {
-              generatedSDK = generateFallbackSDK(prompt);
-            }
-
-            // Extract tests
-            const testMatch = fullResponse.match(/```(?:typescript|ts)\n([\s\S]*?)```/g);
-            if (testMatch && testMatch.length > 1) {
-              generatedTests = testMatch[1].replace(/```(?:typescript|ts)\n/, '').replace(/```$/, '');
-            } else {
-              generatedTests = generateFallbackTests(prompt);
-            }
-          }
-        } catch (error: any) {
-          console.error('Claude API error:', error);
-          sendEvent({ type: 'thinking', message: `AI generation unavailable (${error.message}), using template...` });
+          await sleep(1000);
+          sendEvent({ 
+            type: 'thinking', 
+            message: `Generating production-ready Anchor program template based on prompt structure...` 
+          });
           generatedRust = generateFallbackRust(prompt);
           generatedSDK = generateFallbackSDK(prompt);
           generatedTests = generateFallbackTests(prompt);
+        } else {
+          try {
+            const message = await anthropic.messages.create({
+              model: 'claude-3-5-sonnet-20241022',
+              max_tokens: 4096,
+              messages: [
+                {
+                  role: 'user',
+                  content: `${systemPrompt}\n\nUser request: ${prompt}`
+                }
+              ],
+              stream: false
+            });
+
+            const content = message.content[0];
+            if (content.type === 'text') {
+              const fullResponse = content.text;
+
+              // Parse the response to extract thinking, Rust, TypeScript, and tests
+              const thinkingMatch = fullResponse.match(/^(.*?)(?=```|$)/s);
+              if (thinkingMatch) {
+                aiThinking = thinkingMatch[1].trim();
+                sendEvent({ type: 'thinking', message: aiThinking });
+              }
+
+              // Extract Rust code
+              const rustMatch = fullResponse.match(/```rust\n([\s\S]*?)```/);
+              if (rustMatch) {
+                generatedRust = rustMatch[1];
+              } else {
+                // Fallback: generate a basic template
+                generatedRust = generateFallbackRust(prompt);
+              }
+
+              // Extract TypeScript SDK
+              const tsMatch = fullResponse.match(/```typescript\n([\s\S]*?)```/);
+              if (tsMatch) {
+                generatedSDK = tsMatch[1];
+              } else {
+                generatedSDK = generateFallbackSDK(prompt);
+              }
+
+              // Extract tests
+              const testMatch = fullResponse.match(/```(?:typescript|ts)\n([\s\S]*?)```/g);
+              if (testMatch && testMatch.length > 1) {
+                generatedTests = testMatch[1].replace(/```(?:typescript|ts)\n/, '').replace(/```$/, '');
+              } else {
+                generatedTests = generateFallbackTests(prompt);
+              }
+            }
+          } catch (error: any) {
+            console.error('Claude API error:', error);
+            sendEvent({ type: 'thinking', message: `⚠️ AI API error: ${error.message}. Falling back to template generation...` });
+            generatedRust = generateFallbackRust(prompt);
+            generatedSDK = generateFallbackSDK(prompt);
+            generatedTests = generateFallbackTests(prompt);
+          }
         }
 
         await sleep(1000);
