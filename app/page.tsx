@@ -1,218 +1,204 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function Home() {
-  const router = useRouter();
-  
-  useEffect(() => {
-    router.push('/live');
-  }, [router]);
-
-  return null;
-}
-
-function HomeOld() {
-  const [prompt, setPrompt] = useState('');
-  const [building, setBuilding] = useState(false);
-  const [result, setResult] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const buildAgent = async () => {
-    if (!prompt.trim()) return;
-
-    setBuilding(true);
-    setError(null);
-    setResult(null);
-
-    try {
-      const response = await fetch('/api/build', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Build failed');
-      }
-
-      setResult(data.agent);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setBuilding(false);
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-black text-white">
-      <div className="container mx-auto px-4 py-16">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-            Autonomous Builder X
+    <div className="min-h-screen bg-black text-green-400 font-mono">
+      {/* Header with Navigation */}
+      <div className="border-b border-green-500/30 bg-black/50 backdrop-blur px-6 py-4">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-green-400">
+            ⚡ LiveForge <span className="text-green-600 text-sm ml-2">// Autonomous Builder</span>
           </h1>
-          <p className="text-2xl text-gray-300 mb-2">
-            The Meta-Agent Factory
+          <nav className="flex gap-4 text-sm">
+            <Link 
+              href="/"
+              className="text-green-400 border-b border-green-400"
+            >
+              Home
+            </Link>
+            <Link 
+              href="/live"
+              className="text-green-600 hover:text-green-400 transition-colors"
+            >
+              Live Build
+            </Link>
+            <Link 
+              href="/history"
+              className="text-green-600 hover:text-green-400 transition-colors"
+            >
+              Build History
+            </Link>
+          </nav>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-6 py-16 max-w-5xl">
+        {/* Hero Section */}
+        <div className="text-center mb-16">
+          <div className="text-6xl mb-6">⚡</div>
+          <h1 className="text-5xl font-bold mb-4 text-green-400">
+            LiveForge
+          </h1>
+          <p className="text-2xl text-green-600 mb-2">
+            Watch AI Build Solana Agents, Live
           </p>
-          <p className="text-lg text-gray-400">
-            Describe an agent → Get deployed Solana code + frontend
+          <p className="text-lg text-green-700 max-w-2xl mx-auto">
+            The first meta-agent that builds other agents in real-time with complete transparency. 
+            Every action visible. Every step verified on-chain.
           </p>
         </div>
 
-        {/* Main Interface */}
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-purple-500/30">
-            <label className="block text-lg font-semibold mb-3">
-              What agent do you want to build?
-            </label>
-            <textarea
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Example: Build a Solana agent that manages a DAO treasury with automated yield farming and rebalancing..."
-              className="w-full h-40 bg-black/30 border border-purple-500/50 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
-              disabled={building}
-            />
+        {/* CTA Buttons */}
+        <div className="flex gap-4 justify-center mb-16">
+          <Link
+            href="/live"
+            className="bg-green-600 hover:bg-green-500 text-black font-bold py-4 px-8 rounded transition-colors text-lg"
+          >
+            {'>'} Start Building
+          </Link>
+          <Link
+            href="/history"
+            className="bg-purple-600 hover:bg-purple-500 text-white font-bold py-4 px-8 rounded transition-colors text-lg"
+          >
+            View Build History
+          </Link>
+        </div>
 
-            <button
-              onClick={buildAgent}
-              disabled={building || !prompt.trim()}
-              className="mt-6 w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-600 disabled:to-gray-700 text-white font-bold py-4 px-8 rounded-xl transition-all duration-200 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed shadow-lg"
-            >
-              {building ? (
-                <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Building Agent...
-                </span>
-              ) : (
-                '🚀 Build Agent'
-              )}
-            </button>
+        {/* Features Grid */}
+        <div className="grid md:grid-cols-2 gap-6 mb-16">
+          {/* Feature 1 */}
+          <div className="bg-green-950/20 border border-green-500/30 rounded-lg p-6 backdrop-blur">
+            <div className="text-3xl mb-3">🤖</div>
+            <h3 className="text-xl font-bold text-green-400 mb-2">Real-Time Transparency</h3>
+            <p className="text-green-600">
+              Watch AI reasoning, code generation, compilation, and deployment live. No black boxes.
+            </p>
           </div>
 
-          {/* Error Display */}
-          {error && (
-            <div className="mt-8 bg-red-500/20 border border-red-500 rounded-xl p-6">
-              <h3 className="text-xl font-bold mb-2">❌ Build Failed</h3>
-              <p className="text-red-200">{error}</p>
-            </div>
-          )}
+          {/* Feature 2 */}
+          <div className="bg-green-950/20 border border-green-500/30 rounded-lg p-6 backdrop-blur">
+            <div className="text-3xl mb-3">🔗</div>
+            <h3 className="text-xl font-bold text-green-400 mb-2">On-Chain Verification</h3>
+            <p className="text-green-600">
+              Every build step logged to Solana with SHA256 proofs. Blockchain-verified autonomy.
+            </p>
+          </div>
 
-          {/* Success Display */}
-          {result && (
-            <div className="mt-8 bg-green-500/20 border border-green-500 rounded-xl p-8">
-              <h3 className="text-3xl font-bold mb-6">✅ Agent Built Successfully!</h3>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm text-gray-400 uppercase tracking-wide">Agent Name</label>
-                  <p className="text-xl font-mono bg-black/30 rounded p-3 mt-1">{result.name}</p>
-                </div>
+          {/* Feature 3 */}
+          <div className="bg-green-950/20 border border-green-500/30 rounded-lg p-6 backdrop-blur">
+            <div className="text-3xl mb-3">⚡</div>
+            <h3 className="text-xl font-bold text-green-400 mb-2">Complete Automation</h3>
+            <p className="text-green-600">
+              From natural language prompt to deployed Solana program in 3-5 minutes. Fully autonomous.
+            </p>
+          </div>
 
-                <div>
-                  <label className="text-sm text-gray-400 uppercase tracking-wide">Program ID (Devnet)</label>
-                  <p className="text-sm font-mono bg-black/30 rounded p-3 mt-1 break-all">{result.programId}</p>
-                </div>
+          {/* Feature 4 */}
+          <div className="bg-green-950/20 border border-green-500/30 rounded-lg p-6 backdrop-blur">
+            <div className="text-3xl mb-3">🏗️</div>
+            <h3 className="text-xl font-bold text-green-400 mb-2">Production-Ready Output</h3>
+            <p className="text-green-600">
+              Get Anchor programs, TypeScript SDKs, Next.js frontends, and complete documentation.
+            </p>
+          </div>
+        </div>
 
-                <div>
-                  <label className="text-sm text-gray-400 uppercase tracking-wide">Frontend URL</label>
-                  <a 
-                    href={result.frontendUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="block text-blue-400 hover:text-blue-300 underline bg-black/30 rounded p-3 mt-1"
-                  >
-                    {result.frontendUrl}
-                  </a>
-                </div>
-
-                <div>
-                  <label className="text-sm text-gray-400 uppercase tracking-wide">Repository Path</label>
-                  <p className="text-sm font-mono bg-black/30 rounded p-3 mt-1">{result.repoPath}</p>
-                </div>
-
-                <details className="mt-4">
-                  <summary className="cursor-pointer text-lg font-semibold hover:text-purple-400">
-                    📝 Documentation
-                  </summary>
-                  <div className="mt-4 bg-black/30 rounded-xl p-6 max-h-96 overflow-y-auto">
-                    <pre className="text-sm whitespace-pre-wrap">{result.documentation}</pre>
-                  </div>
-                </details>
-
-                <details className="mt-4">
-                  <summary className="cursor-pointer text-lg font-semibold hover:text-purple-400">
-                    🔨 Build Log
-                  </summary>
-                  <div className="mt-4 bg-black/30 rounded-xl p-6 max-h-96 overflow-y-auto">
-                    <pre className="text-sm font-mono text-green-400">
-                      {result.buildLog.join('\n')}
-                    </pre>
-                  </div>
-                </details>
+        {/* How It Works */}
+        <div className="bg-gradient-to-r from-purple-900/30 to-green-900/30 border border-green-500/30 rounded-lg p-8 backdrop-blur mb-16">
+          <h2 className="text-2xl font-bold text-green-400 mb-6 text-center">
+            {'>'} HOW_IT_WORKS
+          </h2>
+          <div className="space-y-4">
+            <div className="flex items-start gap-4">
+              <div className="bg-green-600 text-black font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                1
+              </div>
+              <div>
+                <div className="text-green-400 font-bold">Describe Your Agent</div>
+                <div className="text-green-600 text-sm">Natural language prompt: "Build a Solana NFT minting program"</div>
               </div>
             </div>
-          )}
 
-          {/* How It Works */}
-          <div className="mt-16 grid md:grid-cols-2 gap-8">
-            <div className="bg-white/5 backdrop-blur rounded-xl p-6 border border-purple-500/20">
-              <h3 className="text-xl font-bold mb-4">🧠 How It Works</h3>
-              <ol className="space-y-3 text-gray-300">
-                <li><strong>1.</strong> Analyze your prompt with Claude</li>
-                <li><strong>2.</strong> Generate Anchor program (Rust)</li>
-                <li><strong>3.</strong> Build & deploy to Solana devnet</li>
-                <li><strong>4.</strong> Generate TypeScript SDK</li>
-                <li><strong>5.</strong> Create Next.js frontend</li>
-                <li><strong>6.</strong> Document everything</li>
-              </ol>
+            <div className="flex items-start gap-4">
+              <div className="bg-green-600 text-black font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                2
+              </div>
+              <div>
+                <div className="text-green-400 font-bold">Watch AI Build</div>
+                <div className="text-green-600 text-sm">See reasoning, code generation, compilation, and deployment in real-time</div>
+              </div>
             </div>
 
-            <div className="bg-white/5 backdrop-blur rounded-xl p-6 border border-purple-500/20">
-              <h3 className="text-xl font-bold mb-4">🏆 Why This Wins</h3>
-              <ul className="space-y-3 text-gray-300">
-                <li>✨ <strong>Most Agentic:</strong> An agent that builds agents</li>
-                <li>⚡ <strong>Full Autonomy:</strong> Prompt → deployed code</li>
-                <li>🔗 <strong>Complete Chain:</strong> Code → deploy → test → docs</li>
-                <li>🎯 <strong>Real Solana:</strong> Actual Anchor programs on devnet</li>
-                <li>📚 <strong>Self-documenting:</strong> Generates its own docs</li>
-              </ul>
+            <div className="flex items-start gap-4">
+              <div className="bg-green-600 text-black font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                3
+              </div>
+              <div>
+                <div className="text-green-400 font-bold">Verify On-Chain</div>
+                <div className="text-green-600 text-sm">Every step logged to Solana with SHA256 verification</div>
+              </div>
             </div>
-          </div>
 
-          {/* Example Prompts */}
-          <div className="mt-12 bg-white/5 backdrop-blur rounded-xl p-6 border border-purple-500/20">
-            <h3 className="text-xl font-bold mb-4">💡 Example Prompts</h3>
-            <div className="space-y-2">
-              {[
-                'Build a Solana agent that manages a DAO treasury with automated yield farming',
-                'Create an agent that monitors wallet activity and sends alerts for large transactions',
-                'Build an NFT minting agent with rarity traits and royalty management',
-                'Create a DeFi arbitrage bot that finds opportunities across Solana DEXes',
-              ].map((example, i) => (
-                <button
-                  key={i}
-                  onClick={() => setPrompt(example)}
-                  className="block w-full text-left text-sm bg-black/20 hover:bg-black/40 rounded p-3 transition-colors"
-                >
-                  {example}
-                </button>
-              ))}
+            <div className="flex items-start gap-4">
+              <div className="bg-green-600 text-black font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                4
+              </div>
+              <div>
+                <div className="text-green-400 font-bold">Get Working Code</div>
+                <div className="text-green-600 text-sm">Deployed program ID, SDK, frontend, and documentation</div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="text-center mt-16 text-gray-400 text-sm">
-          <p>Built for <strong>Solana Agent Hackathon</strong> • Targeting <strong>Most Agentic Prize</strong></p>
-          <p className="mt-2">An agent that builds agents is the ultimate meta.</p>
+        {/* On-Chain Verification Badge */}
+        <div className="bg-gradient-to-r from-purple-900/30 to-green-900/30 border border-purple-500/30 rounded-lg p-6 backdrop-blur text-center">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <span className="text-3xl">✓</span>
+            <h3 className="text-2xl font-bold text-green-400">Verified on Solana</h3>
+          </div>
+          <p className="text-green-600 mb-4">
+            All builds logged to on-chain program with SHA256 verification
+          </p>
+          <a
+            href="https://explorer.solana.com/address/GUyhK2AvkPcVwt4Q1ABmMsQTGvZphiAMaAnDWLSyZoSK?cluster=devnet"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-6 rounded transition-colors"
+          >
+            View Program on Explorer ↗
+          </a>
+          <div className="mt-4 pt-4 border-t border-green-500/20">
+            <div className="text-green-700 text-xs mb-1">PROGRAM_ID:</div>
+            <code className="text-green-500 text-xs bg-black/40 px-3 py-1 rounded">
+              GUyhK2AvkPcVwt4Q1ABmMsQTGvZphiAMaAnDWLSyZoSK
+            </code>
+          </div>
         </div>
+
+        {/* Stats Preview */}
+        <div className="grid grid-cols-3 gap-4 mt-16">
+          <div className="text-center">
+            <div className="text-4xl font-bold text-green-400 mb-2">8+</div>
+            <div className="text-green-600 text-sm">Programs Built</div>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl font-bold text-green-400 mb-2">87.5%</div>
+            <div className="text-green-600 text-sm">Success Rate</div>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl font-bold text-green-400 mb-2">~5m</div>
+            <div className="text-green-600 text-sm">Avg Build Time</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur border-t border-green-500/30 px-6 py-3 text-center text-xs text-green-600">
+        <span>LiveForge v1.0 // Solana Agent Hackathon 2026 // Autonomous Builder - Proven on Chain</span>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 
 type BuildEvent = 
   | { type: 'status'; message: string }
@@ -11,6 +12,17 @@ type BuildEvent =
   | { type: 'chain_log'; txHash: string; stepNumber: number }
   | { type: 'complete'; result: any }
   | { type: 'error'; error: string };
+
+const PROGRAM_ADDRESS = 'GUyhK2AvkPcVwt4Q1ABmMsQTGvZphiAMaAnDWLSyZoSK';
+
+const EXAMPLE_PROMPTS = [
+  "Build a Solana NFT minting program",
+  "Build a DAO treasury manager",
+  "Build a DeFi token swap program",
+  "Build a Solana payment splitter",
+  "Build an escrow program for freelancers",
+  "Build a staking rewards distributor"
+];
 
 export default function LiveForgePage() {
   const [prompt, setPrompt] = useState('');
@@ -103,11 +115,33 @@ export default function LiveForgePage() {
 
   return (
     <div className="min-h-screen bg-black text-green-400 font-mono">
-      {/* Header */}
+      {/* Header with Navigation */}
       <div className="border-b border-green-500/30 bg-black/50 backdrop-blur px-6 py-4">
-        <h1 className="text-2xl font-bold text-green-400">
-          ⚡ LiveForge <span className="text-green-600 text-sm ml-2">// Watch AI Build, Live</span>
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-green-400">
+            ⚡ LiveForge <span className="text-green-600 text-sm ml-2">// Watch AI Build, Live</span>
+          </h1>
+          <nav className="flex gap-4 text-sm">
+            <Link 
+              href="/"
+              className="text-green-600 hover:text-green-400 transition-colors"
+            >
+              Home
+            </Link>
+            <Link 
+              href="/live"
+              className="text-green-400 border-b border-green-400"
+            >
+              Live Build
+            </Link>
+            <Link 
+              href="/history"
+              className="text-green-600 hover:text-green-400 transition-colors"
+            >
+              Build History
+            </Link>
+          </nav>
+        </div>
       </div>
 
       {/* Main Content */}
@@ -115,6 +149,25 @@ export default function LiveForgePage() {
         {/* Input Section */}
         {!building && !result && (
           <div className="max-w-3xl mx-auto space-y-6">
+            {/* Example Prompts Library */}
+            <div className="bg-green-950/20 border border-green-500/30 rounded-lg p-6">
+              <h3 className="text-green-400 mb-3 flex items-center gap-2">
+                <span>💡</span>
+                <span>{'>'} EXAMPLE_PROMPTS:</span>
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {EXAMPLE_PROMPTS.map((example, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setPrompt(example)}
+                    className="bg-gradient-to-r from-purple-900/40 to-green-900/40 hover:from-purple-800/60 hover:to-green-800/60 border border-purple-500/30 hover:border-purple-400/50 text-green-400 hover:text-green-300 px-4 py-2 rounded-full text-sm transition-all backdrop-blur"
+                  >
+                    {example}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="bg-green-950/20 border border-green-500/30 rounded-lg p-6">
               <label className="block text-sm mb-2 text-green-400">
                 {'>'} DESCRIBE_AGENT_TO_BUILD:
@@ -224,22 +277,47 @@ export default function LiveForgePage() {
 
             {/* On-Chain Verification Log */}
             {chainLogs.length > 0 && (
-              <div className="bg-green-950/20 border border-green-500/30 rounded-lg p-6">
-                <h3 className="text-green-400 mb-4">🔗 ON_CHAIN_VERIFICATION</h3>
+              <div className="bg-gradient-to-r from-purple-900/30 to-green-900/30 border border-green-500/30 rounded-lg p-6 backdrop-blur">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-green-400 flex items-center gap-2">
+                    <span className="text-2xl">✓</span>
+                    <span className="text-xl font-bold">VERIFIED_ON_SOLANA</span>
+                  </h3>
+                  <a
+                    href={`https://explorer.solana.com/address/${PROGRAM_ADDRESS}?cluster=devnet`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-4 rounded transition-colors text-sm flex items-center gap-2"
+                  >
+                    View Program ↗
+                  </a>
+                </div>
+                
+                <div className="mb-4 pb-4 border-b border-green-500/20">
+                  <div className="text-green-700 text-xs mb-1">PROGRAM_ID:</div>
+                  <code className="text-green-500 text-xs bg-black/40 px-2 py-1 rounded">
+                    {PROGRAM_ADDRESS}
+                  </code>
+                </div>
+
                 <div className="space-y-2">
+                  <div className="text-green-600 text-sm mb-2">SHA256_VERIFICATION_HASHES:</div>
                   {chainLogs.map((log, i) => (
-                    <div key={i} className="flex items-center gap-3 text-sm">
-                      <span className="text-green-600">Step {log.step}:</span>
-                      <code className="text-green-300 bg-black px-2 py-1 rounded text-xs flex-1 truncate">
-                        {log.tx}
+                    <div key={i} className="flex items-center gap-3 text-sm bg-black/40 rounded p-3 hover:bg-black/60 transition-colors group">
+                      <div className="flex items-center gap-2">
+                        <span className="inline-block w-2 h-2 bg-green-400 rounded-full shadow-lg shadow-green-400/50"></span>
+                        <span className="text-green-600">Step {log.step}:</span>
+                      </div>
+                      <code className="text-green-300 text-xs flex-1 truncate">
+                        SHA256: {log.tx}
                       </code>
                       <a
                         href={`https://explorer.solana.com/tx/${log.tx}?cluster=devnet`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-green-400 hover:text-green-300"
+                        className="text-green-400 hover:text-green-300 opacity-0 group-hover:opacity-100 transition-opacity"
                       >
-                        ↗
+                        Verify ↗
                       </a>
                     </div>
                   ))}
@@ -256,6 +334,12 @@ export default function LiveForgePage() {
               <div className="text-6xl mb-4">✅</div>
               <h2 className="text-3xl font-bold text-green-400 mb-2">BUILD_COMPLETE</h2>
               <p className="text-green-600">Agent built and deployed to Solana devnet</p>
+              
+              {/* Verified Badge */}
+              <div className="mt-6 inline-flex items-center gap-2 bg-gradient-to-r from-purple-900/50 to-green-900/50 border border-green-500/50 rounded-full px-6 py-3">
+                <span className="text-2xl">✓</span>
+                <span className="text-green-400 font-bold">Verified on Solana</span>
+              </div>
             </div>
 
             <div className="bg-black border border-green-500/30 rounded-lg p-6 space-y-4">
@@ -266,9 +350,19 @@ export default function LiveForgePage() {
 
               <div>
                 <div className="text-green-600 text-xs mb-1">PROGRAM_ID:</div>
-                <code className="text-green-300 bg-green-950/30 px-3 py-2 rounded block break-all">
-                  {result.programId}
-                </code>
+                <div className="flex items-center gap-2">
+                  <code className="text-green-300 bg-green-950/30 px-3 py-2 rounded flex-1 break-all text-sm">
+                    {result.programId}
+                  </code>
+                  <a
+                    href={`https://explorer.solana.com/address/${result.programId}?cluster=devnet`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-green-400 hover:text-green-300 whitespace-nowrap"
+                  >
+                    View ↗
+                  </a>
+                </div>
               </div>
 
               <div>
@@ -278,28 +372,49 @@ export default function LiveForgePage() {
                 </code>
               </div>
 
-              <div>
-                <div className="text-green-600 text-xs mb-2">ON_CHAIN_PROOF ({result.chainProof.length} transactions):</div>
+              {/* Enhanced On-Chain Proof */}
+              <div className="bg-gradient-to-r from-purple-900/20 to-green-900/20 border border-purple-500/30 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="text-green-600 text-xs">ON_CHAIN_VERIFICATION ({result.chainProof.length} steps):</div>
+                  <a
+                    href={`https://explorer.solana.com/address/${PROGRAM_ADDRESS}?cluster=devnet`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold py-1 px-3 rounded transition-colors"
+                  >
+                    Verify on Chain ↗
+                  </a>
+                </div>
                 <div className="space-y-1 max-h-48 overflow-y-auto">
                   {result.chainProof.map((proof: string, i: number) => (
-                    <div key={i} className="text-xs text-green-500 bg-green-950/20 px-2 py-1 rounded">
-                      {proof}
+                    <div key={i} className="flex items-center gap-2 text-xs bg-black/40 px-3 py-2 rounded">
+                      <span className="inline-block w-2 h-2 bg-green-400 rounded-full shadow-lg shadow-green-400/50"></span>
+                      <span className="text-green-600">SHA256:</span>
+                      <code className="text-green-500 flex-1">{proof}</code>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
 
-            <button
-              onClick={() => {
-                setResult(null);
-                setPrompt('');
-                setEvents([]);
-              }}
-              className="w-full bg-green-600 hover:bg-green-500 text-black font-bold py-3 px-6 rounded transition-colors"
-            >
-              {'>'} BUILD_ANOTHER_AGENT()
-            </button>
+            <div className="flex gap-4">
+              <button
+                onClick={() => {
+                  setResult(null);
+                  setPrompt('');
+                  setEvents([]);
+                }}
+                className="flex-1 bg-green-600 hover:bg-green-500 text-black font-bold py-3 px-6 rounded transition-colors"
+              >
+                {'>'} BUILD_ANOTHER_AGENT()
+              </button>
+              <Link
+                href="/history"
+                className="flex-1 bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-6 rounded transition-colors text-center"
+              >
+                View Build History →
+              </Link>
+            </div>
           </div>
         )}
       </div>

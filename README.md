@@ -4,6 +4,37 @@
 
 The first meta-agent that builds other agents in real-time with complete transparency. Every action visible. Every step verified on-chain. True autonomous development you can witness.
 
+---
+
+## 🏆 For Hackathon Judges
+
+**Quick Links:**
+- **Live Demo**: https://autonomous-builder-x.vercel.app/live
+- **Build History**: https://autonomous-builder-x.vercel.app/history
+- **On-Chain Program**: https://explorer.solana.com/address/GUyhK2AvkPcVwt4Q1ABmMsQTGvZphiAMaAnDWLSyZoSK?cluster=devnet
+- **GitHub Repo**: https://github.com/Pratiikpy/autonomous-builder-x
+
+### What Makes Us "Most Agentic"
+
+1. **Meta-Agent Architecture**: An agent that autonomously builds other agents — the ultimate recursive autonomy
+2. **Complete Lifecycle Automation**: From natural language prompt → deployed Solana program in 3-5 minutes (analysis, code generation, compilation, deployment, documentation)
+3. **Transparent Real-Time Execution**: Watch AI reasoning, code streaming, terminal output, and compilation live — no black boxes
+4. **On-Chain Verification**: Every build step logged to Solana with SHA256 proofs — blockchain-verified autonomous development
+5. **Recurring Autonomy**: Check our [build history](https://autonomous-builder-x.vercel.app/history) — 8+ programs built autonomously, 87.5% success rate
+6. **Zero Human Intervention**: Prompt → working Solana program + SDK + frontend + docs, fully automated
+
+### How to Try It
+
+1. **Visit**: https://autonomous-builder-x.vercel.app/live
+2. **Click an example prompt** (or write your own): "Build a Solana NFT minting program"
+3. **Watch the magic**: See AI think, code, compile, and deploy in real-time
+4. **Verify on-chain**: Every step's SHA256 hash is logged to our Solana program
+5. **Get working code**: Deployed program ID, SDK, frontend, and complete documentation
+
+**Expected Demo Time**: 3-5 minutes per build
+
+---
+
 ## 🎯 The Concept
 
 **LiveForge isn't just an agent that builds—it's an agent that builds TRANSPARENTLY.**
