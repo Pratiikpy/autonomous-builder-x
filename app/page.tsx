@@ -1,8 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
+  
+  useEffect(() => {
+    router.push('/live');
+  }, [router]);
+
+  return null;
+}
+
+function HomeOld() {
   const [prompt, setPrompt] = useState('');
   const [building, setBuilding] = useState(false);
   const [result, setResult] = useState<any>(null);
